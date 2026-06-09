@@ -68,6 +68,16 @@ class TestStandardColumns:
         features = set(df[GTF_COLUMNS.FEATURE].to_list())
         assert features == {"gene", "transcript", "exon"}
 
+    def test_numeric_column_dtypes(self):
+        df = collect(parse_gtf(str(SAMPLE_GTF)))
+        assert df.schema[GTF_COLUMNS.START] == pl.Int64
+        assert df.schema[GTF_COLUMNS.END] == pl.Int64
+        assert df.schema[GTF_COLUMNS.SCORE] == pl.Float64
+
+    def test_frame_dots_are_mapped_to_null(self):
+        df = collect(parse_gtf(str(SAMPLE_GTF)))
+        assert df[GTF_COLUMNS.FRAME].null_count() == df.height
+
 
 class TestAttributeExtraction:
     def test_gene_id_extracted(self):
