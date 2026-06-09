@@ -8,7 +8,7 @@ import polars as pl
 
 
 from gtf_polars import GTF_COLUMNS, parse_gtf
-from dataclasses import  astuple
+from dataclasses import astuple
 
 
 DATA_DIR = pathlib.Path(__file__).parent / "data"
