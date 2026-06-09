@@ -2,20 +2,41 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass, astuple
 import polars as pl
 
-# Standard 9 GTF column names as defined by the GTF/GFF2 specification.
-GTF_COLUMNS = [
-    "seqname",
-    "source",
-    "feature",
-    "start",
-    "end",
-    "score",
-    "strand",
-    "frame",
-    "attributes",
-]
+@dataclass(frozen=True)
+class GTFColumns:
+    """Standard 9 GTF column names as defined by the GTF/GFF2 specification.
+
+    Behaves like an immutable sequence of the 9 column names for backward compatibility.
+    """
+
+    SEQNAME: str = "seqname"
+    SOURCE: str = "source"
+    FEATURE: str = "feature"
+    START: str = "start"
+    END: str = "end"
+    SCORE: str = "score"
+    STRAND: str = "strand"
+    FRAME: str = "frame"
+    ATTRIBUTES: str = "attributes"
+
+    def __iter__(self):
+        return iter(astuple(self))
+
+    def __len__(self) -> int:
+        return len(astuple(self))
+
+    def __getitem__(self, idx: int) -> str:
+        return astuple(self)[idx]
+
+    def __contains__(self, item: object) -> bool:
+        return item in astuple(self)
+
+    def as_tuple(self) -> tuple[str, ...]:
+        return astuple(self)
+GTF_COLUMNS = GTFColumns()
 
 
 def parse_gtf(
@@ -64,21 +85,46 @@ def parse_gtf(
     column.  Polars evaluates this *in parallel across chunks* when
     ``.collect()`` is eventually called, with no Python-level row iteration.
     """
+    # Safeguard: Convert the dataclass fields to a native list for the Rust layer
+    gtf_columns_list = list(astuple(GTF_COLUMNS))
+
+    # 1. Scan the CSV file without schema inference to avoid parse crashes 
+    # caused by standard "." missing value tokens in numeric/integer columns.
     lf = pl.scan_csv(
         file_path,
         separator="\t",
         comment_prefix="#",
         has_header=False,
-        new_columns=GTF_COLUMNS,
+        new_columns=gtf_columns_list,
         infer_schema=False,
     )
+
+    # 2. Lazily sanitize missing value representations (".") and cast types cleanly
+    lf = lf.with_columns([
+        # Cast guaranteed integer coordinates directly
+        pl.col(GTF_COLUMNS.START).cast(pl.Int64),
+        pl.col(GTF_COLUMNS.END).cast(pl.Int64),
+
+        # Handle "." markers in the score column by mapping to null prior to float conversion
+        pl.when(pl.col(GTF_COLUMNS.SCORE) == ".")
+        .then(None)
+        .otherwise(pl.col(GTF_COLUMNS.SCORE))
+        .cast(pl.Float64)
+        .alias(GTF_COLUMNS.SCORE),
+
+        # Handle "." markers in the frame column by mapping to null
+        pl.when(pl.col(GTF_COLUMNS.FRAME) == ".")
+        .then(None)
+        .otherwise(pl.col(GTF_COLUMNS.FRAME))
+        .alias(GTF_COLUMNS.FRAME)
+    ])
 
     if attributes_to_extract:
         # Deduplicate while preserving order and guard against column collisions.
         seen: set[str] = set()
         attrs: list[str] = []
         for attr in attributes_to_extract:
-            if attr in GTF_COLUMNS:
+            if attr in gtf_columns_list:
                 raise ValueError(
                     f"Attribute name '{attr}' would overwrite a standard GTF column"
                 )
@@ -91,7 +137,7 @@ def parse_gtf(
         # Build all extraction expressions up-front so they are applied in a
         # single ``with_columns`` call (one parallel pass over the data).
         exprs = [
-            pl.col("attributes")
+            pl.col(GTF_COLUMNS.ATTRIBUTES)
             .str.extract(rf'(?:^|;\s*){re.escape(attr)}\s+"([^"]*)"', group_index=1)
             .alias(attr)
             for attr in attrs

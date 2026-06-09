@@ -5,6 +5,7 @@ Summary: Parse GTF files with Polars
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 Requires-Dist: polars>=1.0.0
+Requires-Dist: pandera[polars]>=0.18.0
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 
