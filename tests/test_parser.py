@@ -5,7 +5,7 @@ from __future__ import annotations
 import pathlib
 
 import polars as pl
-import pytest
+
 
 from gtf_polars import GTF_COLUMNS, parse_gtf
 
