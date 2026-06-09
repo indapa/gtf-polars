@@ -7,7 +7,11 @@ import polars as pl
 
 @dataclass(frozen=True)
 class GTFColumns:
-    """Standard 9 GTF column names as defined by the GTF/GFF2 specification."""
+    """Standard 9 GTF column names as defined by the GTF/GFF2 specification.
+
+    Behaves like an immutable sequence of the 9 column names for backward compatibility.
+    """
+
     SEQNAME: str = "seqname"
     SOURCE: str = "source"
     FEATURE: str = "feature"
@@ -18,6 +22,20 @@ class GTFColumns:
     FRAME: str = "frame"
     ATTRIBUTES: str = "attributes"
 
+    def __iter__(self):
+        return iter(astuple(self))
+
+    def __len__(self) -> int:
+        return len(astuple(self))
+
+    def __getitem__(self, idx: int) -> str:
+        return astuple(self)[idx]
+
+    def __contains__(self, item: object) -> bool:
+        return item in astuple(self)
+
+    def as_tuple(self) -> tuple[str, ...]:
+        return astuple(self)
 GTF_COLUMNS = GTFColumns()
 
 
