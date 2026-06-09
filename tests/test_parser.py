@@ -8,6 +8,8 @@ import polars as pl
 
 
 from gtf_polars import GTF_COLUMNS, parse_gtf
+from dataclasses import  astuple
+
 
 DATA_DIR = pathlib.Path(__file__).parent / "data"
 SAMPLE_GTF = DATA_DIR / "test.gtf"
@@ -45,12 +47,12 @@ class TestReturnType:
 class TestStandardColumns:
     def test_has_all_gtf_columns(self):
         df = collect(parse_gtf(str(SAMPLE_GTF)))
-        for col in GTF_COLUMNS:
+        for col in astuple(GTF_COLUMNS):
             assert col in df.columns, f"Expected column '{col}' not found"
 
     def test_column_order(self):
         df = collect(parse_gtf(str(SAMPLE_GTF)))
-        assert df.columns[:9] == GTF_COLUMNS
+        assert tuple(df.columns[:9]) == astuple(GTF_COLUMNS)
 
     def test_row_count(self):
         # Fixture has 8 data rows (comment lines are skipped).
@@ -59,11 +61,11 @@ class TestStandardColumns:
 
     def test_seqname_values(self):
         df = collect(parse_gtf(str(SAMPLE_GTF)))
-        assert df["seqname"].to_list() == ["chr1"] * 8
+        assert df[GTF_COLUMNS.SEQNAME].to_list() == ["chr1"] * 8
 
     def test_feature_values(self):
         df = collect(parse_gtf(str(SAMPLE_GTF)))
-        features = set(df["feature"].to_list())
+        features = set(df[GTF_COLUMNS.FEATURE].to_list())
         assert features == {"gene", "transcript", "exon"}
 
 
