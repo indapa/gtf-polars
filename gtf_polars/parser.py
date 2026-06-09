@@ -74,13 +74,27 @@ def parse_gtf(
     )
 
     if attributes_to_extract:
+        # Deduplicate while preserving order and guard against column collisions.
+        seen: set[str] = set()
+        attrs: list[str] = []
+        for attr in attributes_to_extract:
+            if attr in GTF_COLUMNS:
+                raise ValueError(
+                    f"Attribute name '{attr}' would overwrite a standard GTF column"
+                )
+            if attr not in seen:
+                seen.add(attr)
+                attrs.append(attr)
+
+        import re
+
         # Build all extraction expressions up-front so they are applied in a
         # single ``with_columns`` call (one parallel pass over the data).
         exprs = [
             pl.col("attributes")
-            .str.extract(rf'{attr}\s+"([^"]*)"', group_index=1)
+            .str.extract(rf'(?:^|;\s*){re.escape(attr)}\s+"([^"]*)"', group_index=1)
             .alias(attr)
-            for attr in attributes_to_extract
+            for attr in attrs
         ]
         lf = lf.with_columns(exprs)
 
