@@ -1,0 +1,10 @@
+# This file is a minimal GTF fixture for testing gtf_polars.
+# Format: seqname source feature start end score strand frame attributes
+chr1	HAVANA	gene	11869	14409	.	+	.	gene_id "ENSG00000223972"; gene_version "5"; gene_name "DDX11L1"; gene_source "havana"; gene_biotype "transcribed_unprocessed_pseudogene";
+chr1	HAVANA	transcript	11869	14409	.	+	.	gene_id "ENSG00000223972"; transcript_id "ENST00000456328"; gene_name "DDX11L1"; transcript_name "DDX11L1-202";
+chr1	HAVANA	exon	11869	12227	.	+	.	gene_id "ENSG00000223972"; transcript_id "ENST00000456328"; gene_name "DDX11L1"; exon_number "1";
+chr1	HAVANA	exon	12613	12721	.	+	.	gene_id "ENSG00000223972"; transcript_id "ENST00000456328"; gene_name "DDX11L1"; exon_number "2";
+chr1	ENSEMBL	gene	17369	17436	.	-	.	gene_id "ENSG00000278267"; gene_version "1"; gene_name "MIR6859-1"; gene_source "ensembl"; gene_biotype "miRNA";
+chr1	ENSEMBL	transcript	17369	17436	.	-	.	gene_id "ENSG00000278267"; transcript_id "ENST00000619216"; gene_name "MIR6859-1"; transcript_name "MIR6859-1-201";
+chr1	ENSEMBL	exon	17369	17436	.	-	.	gene_id "ENSG00000278267"; transcript_id "ENST00000619216"; gene_name "MIR6859-1"; exon_number "1";
+chr1	HAVANA	gene	29554	31109	.	+	.	gene_id "ENSG00000243485"; gene_version "5"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA";
