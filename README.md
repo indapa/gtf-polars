@@ -1,12 +1,12 @@
 # gtf-polars
 Parse GTF files with Polars
 
-Implements a memory-efficient GTF parser that stays fully lazy until .collect() is called
+Implements a memory-efficient GTF parser that stays fully lazy until .collect() is called. For more information on Polars Lazy API, see this [link](https://docs.pola.rs/user-guide/concepts/lazy-api/)
 
 
 ```
-from gtf_polars import parse_gt
 from gtf_polars import parse_gtf
+import polars as pl
 
 lf = parse_gtf("gencode.v39.annotation.sorted.gtf", attributes_to_extract=["gene_id", "gene_name"])
 
