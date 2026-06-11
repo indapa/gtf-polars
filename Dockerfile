@@ -9,7 +9,7 @@ WORKDIR /app
 # Install the package and its runtime dependencies.
 COPY pyproject.toml README.md ./
 COPY gtf_polars ./gtf_polars
-RUN pip install --upgrade pip && pip install .
+RUN python -m pip install --upgrade pip && python -m pip install .
 
 # Use a non-root user for runtime safety.
 RUN useradd --create-home --shell /usr/sbin/nologin appuser
