@@ -1,0 +1,10 @@
+.git
+.github
+tests
+build
+*.egg-info
+__pycache__
+*.py[cod]
+*$py.class
+.vscode
+uv.lock
