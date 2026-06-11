@@ -1,0 +1,9 @@
+# Ignore the specific pycache folder in tests
+tests/__pycache__/
+
+# Highly recommended: Ignore all python bytecode compiled files everywhere in the project
+gtf_polars/__pycache__/
+*.py[cod]
+*$py.class
+
+.vscode/settings.json
