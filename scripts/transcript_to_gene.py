@@ -17,7 +17,7 @@ def build_transcript_to_gene_csv(gtf_file: Path, output_csv: Path) -> None:
 
     df = (
         lf.filter(pl.col("feature") == "transcript")
-        .select(["transcript_id", "gene_name"])
+        .select(["transcript_id", "gene_name", "gene_id"])
         .collect()
     )
 
