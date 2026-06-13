@@ -13,7 +13,9 @@ from gtf_polars import parse_gtf
 
 def build_transcript_to_gene_csv(gtf_file: Path, output_csv: Path) -> None:
     """Parse a GTF file and write transcript_id -> gene_name mapping CSV."""
-    lf = parse_gtf(gtf_file, attributes_to_extract=["gene_name", "transcript_id"])
+    lf = parse_gtf(
+        str(gtf_file), attributes_to_extract=["gene_id", "gene_name", "transcript_id"]
+    )
 
     df = (
         lf.filter(pl.col("feature") == "transcript")
