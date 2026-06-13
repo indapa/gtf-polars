@@ -12,14 +12,14 @@ from gtf_polars import parse_gtf
 
 
 def build_transcript_to_gene_csv(gtf_file: Path, output_csv: Path) -> None:
-    """Parse a GTF file and write transcript_id -> gene_name mapping CSV."""
+    """Parse a GTF file and write transcript_id, gene_id, gene_name mapping CSV."""
     lf = parse_gtf(
         str(gtf_file), attributes_to_extract=["gene_id", "gene_name", "transcript_id"]
     )
 
     df = (
         lf.filter(pl.col("feature") == "transcript")
-        .select(["transcript_id", "gene_name", "gene_id"])
+        .select(["transcript_id", "gene_id", "gene_name"])
         .collect()
     )
 
@@ -38,8 +38,8 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("transcriptTogene.csv"),
-        help="Output CSV path (default: transcriptTogene.csv)",
+        default=Path("transcript_to_gene.csv"),
+        help="Output CSV path (default: transcript_to_gene.csv)",
     )
 
     args = parser.parse_args()
