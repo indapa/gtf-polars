@@ -10,6 +10,8 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY gtf_polars ./gtf_polars
 RUN python -m pip install --upgrade pip && python -m pip install .
+COPY scripts/transcript_to_gene.py /usr/local/bin/transcript_to_gene.py
+RUN chmod +x /usr/local/bin/transcript_to_gene.py
 
 # Use a non-root user for runtime safety.
 RUN useradd --create-home --shell /usr/sbin/nologin appuser
