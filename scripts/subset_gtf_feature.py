@@ -51,7 +51,11 @@ def subset_gtf_by_feature(
     filtered = filtered.select(list(GTF_COLUMNS))
 
     df = filtered.collect()
-    df.write_csv(output_gtf)
+    df.write_csv(
+        output_gtf, 
+        separator="\t",        # 1. Fixed typo: "seperator" -> "separator"
+        include_header=False   # 2. Added: GTF files must not have a header row
+    )
 
     
 
