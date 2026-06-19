@@ -49,15 +49,10 @@ def subset_gtf_by_feature(
 
     # Select columns in canonical GTF order.
     filtered = filtered.select(list(GTF_COLUMNS))
+    filtered.sink_csv(output_gtf, separator="\t", include_header=False)
+    
 
-    df = filtered.collect()
-
-    # write_csv would quote fields containing semicolons/quotes (the attributes
-    # column), which breaks GTF format.  Write rows manually as tab-separated
-    # lines instead.
-    with output_gtf.open("w") as fh:
-        for row in df.iter_rows():
-            fh.write("\t".join(str(v) for v in row) + "\n")
+    
 
 
 def main() -> None:
