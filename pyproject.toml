@@ -9,9 +9,13 @@ description = "Parse GTF files with Polars"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "polars>=1.0.0",
-    "pandera[polars]>=0.18.0",
+    "polars>=1.0.0"
+   
 ]
+[project.urls]
+Homepage = "https://github.com/indapa/gtf-polars"
+Repository = "https://github.com/indapa/gtf-polars"
+"Bug Tracker" = "https://github.com/indapa/gtf-polars/issues"
 
 [project.optional-dependencies]
 dev = [
