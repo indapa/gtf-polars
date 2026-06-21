@@ -1,4 +1,8 @@
 # gtf-polars
+
+[![PyPI version](https://img.shields.io/pypi/v/gtf-polars.svg)](https://pypi.org/project/gtf-polars/)
+
+
 Parse GTF files with Polars
 
 Implements a memory-efficient GTF parser that stays fully lazy until .collect() is called. For more information on Polars Lazy API, see this [link](https://docs.pola.rs/user-guide/concepts/lazy-api/)
