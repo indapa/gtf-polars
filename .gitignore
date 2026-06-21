@@ -7,3 +7,4 @@ gtf_polars/__pycache__/
 *$py.class
 
 .vscode/settings.json
+*.egg-info/
